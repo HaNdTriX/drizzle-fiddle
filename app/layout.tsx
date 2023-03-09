@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Dizzle Fiddle",
-  description: "Just a simple fiddle for testing out Dizzle",
+  title: "Drizzle Fiddle",
+  description: "Just a simple fiddle for testing out Drizzle",
 };
 
 export default function RootLayout({
