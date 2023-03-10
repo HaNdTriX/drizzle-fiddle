@@ -1,6 +1,16 @@
 import Link from "next/link";
 import db from "@/db";
 import { pages } from "@/db/schema";
+import type { Metadata } from "next";
+import {
+  PlusIcon,
+  ChevronRightIcon,
+  CalendarIcon,
+} from "@heroicons/react/20/solid";
+
+export const metadata: Metadata = {
+  title: "Pages",
+};
 
 export default async function PagesPage() {
   const allPages = await db
@@ -8,39 +18,72 @@ export default async function PagesPage() {
       id: pages.id,
       title: pages.title,
       slug: pages.slug,
+      updatedAt: pages.updatedAt,
     })
     .from(pages);
 
   return (
     <div className="py-10">
       <header>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 flex items-center justify-between mb-3">
           <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
             Pages
-          </h1>
+          </h1>{" "}
+          <Link
+            href="/pages/create"
+            className="rounded-full bg-indigo-600 p-1.5 text-white shadow hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+            <span className="sr-only">Create Page</span>
+          </Link>
         </div>
       </header>
       <main>
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <ul role="list" className="divide-y divide-gray-200">
-            {allPages.map((page) => (
-              <li key={page.id} className="flex py-4">
-                <div className="h-10 w-10 rounded-full bg-gray-200" />
-                <div className="ml-3">
+        <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
+          <div className="overflow-hidden bg-white shadow sm:rounded-md">
+            <ul role="list" className="divide-y divide-gray-200">
+              {allPages.map((page) => (
+                <li key={page.id}>
                   <Link
-                    href={`/page/${page.slug}`}
-                    className="text-sm font-medium text-gray-900"
+                    href={`/${page.slug}`}
+                    className="block hover:bg-gray-50"
                   >
-                    {page.title}
+                    <div className="flex items-center px-4 py-4 sm:px-6">
+                      <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div className="truncate">
+                          <div className="flex text-sm">
+                            <p className="truncate font-medium text-indigo-600">
+                              {page.title}
+                            </p>
+                          </div>
+                          <div className="mt-2 flex">
+                            <div className="flex items-center text-sm text-gray-500">
+                              <CalendarIcon
+                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                                aria-hidden="true"
+                              />
+                              <p>
+                                Updated on{" "}
+                                <time dateTime={page.updatedAt!}>
+                                  {page.updatedAt}
+                                </time>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="ml-5 flex-shrink-0">
+                        <ChevronRightIcon
+                          className="h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    </div>
                   </Link>
-                  <p className="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Reprehenderit perspiciatis delectus alias mollitia? Illum.
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </main>
     </div>

@@ -1,48 +1,47 @@
 import {
   mysqlTable,
-  int,
+  datetime,
   index,
-  uniqueIndex,
   varchar,
   text,
-  timestamp,
+  serial,
+  int,
+  mysqlEnum,
 } from "drizzle-orm/mysql-core";
+import { sql } from "drizzle-orm/sql";
 
 export const pages = mysqlTable(
   "pages",
   {
-    id: int("id").autoincrement().primaryKey().notNull(),
+    id: serial("id").primaryKey(),
     slug: varchar("slug", { length: 255 }).notNull(),
     title: varchar("title", { length: 255 }).notNull(),
+    content: text("content").notNull(),
     authorId: int("author_id")
       .notNull()
-      .references(() => users.id),
-    content: text("content").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
+      .references(() => users.id, { onUpdate: "cascade" }),
+    createdAt: datetime("created_at", { mode: "string", fsp: 3 })
+      .default(sql`(CURRENT_TIMESTAMP(3))`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" })
-      .default("CURRENT_TIMESTAMP")
+    updatedAt: datetime("updated_at", { mode: "string", fsp: 3 })
+      .default(sql`(CURRENT_TIMESTAMP(3))`)
       .notNull(),
   },
   (table) => ({
-    author: index("author").on(table.authorId),
-    slug: uniqueIndex("slug").on(table.slug),
+    authorIdFkey: index("author_id_fkey").on(table.authorId),
   })
 );
 
-export const users = mysqlTable(
-  "users",
-  {
-    id: int("id").autoincrement().primaryKey().notNull(),
-    name: varchar("name", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).default(
-      "CURRENT_TIMESTAMP"
-    ),
-  },
-  (table) => ({
-    name: uniqueIndex("name").on(table.name),
-  })
-);
+export const users = mysqlTable("users", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  emailVerified: datetime("email_verified", { mode: "string", fsp: 3 }),
+  role: mysqlEnum("role", ["user", "admin"]).default("user"),
+  createdAt: datetime("created_at", { mode: "string", fsp: 3 })
+    .default(sql`(CURRENT_TIMESTAMP(3))`)
+    .notNull(),
+  updatedAt: datetime("updated_at", { mode: "string", fsp: 3 })
+    .default(sql`(CURRENT_TIMESTAMP(3))`)
+    .notNull(),
+});
