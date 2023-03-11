@@ -7,13 +7,14 @@ import {
   ChevronRightIcon,
   CalendarIcon,
 } from "@heroicons/react/20/solid";
+import { cache } from "react";
 
 export const metadata: Metadata = {
   title: "Pages",
 };
 
-export default async function PagesPage() {
-  const allPages = await db
+const getAllPages = cache(async () => {
+  return db
     .select({
       id: pages.id,
       title: pages.title,
@@ -21,6 +22,10 @@ export default async function PagesPage() {
       updatedAt: pages.updatedAt,
     })
     .from(pages);
+});
+
+export default async function PagesPage() {
+  const allPages = await getAllPages();
 
   return (
     <div className="py-10">

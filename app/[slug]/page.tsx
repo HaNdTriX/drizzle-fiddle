@@ -6,9 +6,9 @@ import { eq } from "drizzle-orm/expressions";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { PencilIcon } from "@heroicons/react/20/solid";
+import { cache } from "react";
 
-// Dedupe this code!
-async function getPage(slug: string) {
+const getPage = cache(async (slug: string) => {
   const [page] = await db
     .select({
       id: pages.id,
@@ -21,7 +21,7 @@ async function getPage(slug: string) {
     .where(eq(pages.slug, slug))
     .limit(1);
   return page;
-}
+});
 
 type PageProps = {
   params: { slug: string };

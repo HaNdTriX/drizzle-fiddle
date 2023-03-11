@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { eq } from "drizzle-orm/expressions";
 import { notFound } from "next/navigation";
 import Form from "./form";
+import { cache } from "react";
 
-async function getPage(slug: string) {
+const getPage = cache(async (slug: string) => {
   const [page] = await db
     .select({
       id: pages.id,
@@ -18,7 +19,7 @@ async function getPage(slug: string) {
     .where(eq(pages.slug, slug))
     .limit(1);
   return page;
-}
+});
 
 type PageProps = {
   params: { slug: string };

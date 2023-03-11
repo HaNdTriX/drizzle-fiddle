@@ -1,14 +1,19 @@
 import db from "@/db";
 import { users } from "@/db/schema";
+import { cache } from "react";
 
-export default async function UsersPage() {
-  const allUsers = await db
+const getAllUsers = cache(async () => {
+  return db
     .select({
       id: users.id,
       name: users.name,
       email: users.email,
     })
     .from(users);
+});
+
+export default async function UsersPage() {
+  const allUsers = await getAllUsers();
   return (
     <div className="py-10">
       <header>
