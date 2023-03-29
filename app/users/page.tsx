@@ -12,7 +12,6 @@ const getAllUsers = cache(async () =>
       image: users.image,
     })
     .from(users)
-    .all()
 );
 
 export const metadata: Metadata = {

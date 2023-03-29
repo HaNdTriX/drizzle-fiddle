@@ -8,6 +8,9 @@ async function POST(url: string, { arg }: { arg: FormData }) {
   const response = await fetch(url, {
     method: "POST",
     body: arg,
+    headers: {
+      Accept: "application/json",
+    },
   });
 
   if (!response.ok) {

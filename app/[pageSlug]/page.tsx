@@ -8,10 +8,9 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { PencilIcon } from "@heroicons/react/20/solid";
 import { cache } from "react";
 import { getServerSession } from "@/lib/next-auth";
-import CoverPhoto from "./cover-photo";
 
-const getPage = cache(async (slug: string) =>
-  db
+const getPage = cache(async (slug: string) => {
+  const [page] = await db
     .select({
       id: pages.id,
       title: pages.title,
@@ -22,8 +21,9 @@ const getPage = cache(async (slug: string) =>
     })
     .from(pages)
     .where(eq(pages.slug, slug))
-    .get()
-);
+    .limit(1);
+  return page;
+});
 
 type PageProps = {
   params: { pageSlug: string };
@@ -46,11 +46,6 @@ export default async function Page({ params }: PageProps) {
   return (
     <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
       <div className="overflow-hidden bg-white shadow sm:rounded-md">
-        <div className="relative h-56">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <CoverPhoto id={page.id} />
-        </div>
-
         <div className="p-4 bg-gray-50 border-b sm:p-6 flex items-center justify-between mb-3">
           <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
             {page.title}

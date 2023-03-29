@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import db from "@/db";
-import { pages, users } from "@/db/schema";
+import { pages } from "@/db/schema";
 import { eq } from "drizzle-orm/expressions";
 import { getServerSession } from "@/lib/next-auth";
 
@@ -18,23 +18,26 @@ export async function PATCH(
   const title = formData.get("title") as string;
   const slug = formData.get("slug") as string;
   const content = formData.get("content") as string;
-  const coverPhotoBlob = formData.get("cover-photo") as unknown as Blob;
-  const coverPhoto = Buffer.from(await coverPhotoBlob.arrayBuffer());
 
-  const patchedPage = await db
+  // TODO - pipe coverPhoto to some bucket
+  // const coverPhotoBlob = formData.get("cover-photo") as unknown as Blob;
+  // const coverPhoto = Buffer.from(await coverPhotoBlob.arrayBuffer());
+
+  await db
     .update(pages)
     .set({
       title,
       slug,
       content,
-      coverPhoto,
       authorId: session.user.id,
     })
-    .where(eq(pages.id, Number(params.id)))
-    .returning()
-    .get();
+    .where(eq(pages.id, params.id));
 
-  console.log(patchedPage);
+  const [patchedPage] = await db
+    .select()
+    .from(pages)
+    .where(eq(pages.id, params.id))
+    .limit(1);
 
   return NextResponse.json(patchedPage);
 }

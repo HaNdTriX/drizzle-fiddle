@@ -7,19 +7,21 @@ import Form from "./form";
 import { cache } from "react";
 import { getServerSession } from "@/lib/next-auth";
 
-const getPage = cache(async (slug: string) =>
-  db
+const getPage = cache(async (slug: string) => {
+  const [page] = await db
     .select({
       id: pages.id,
       title: pages.title,
       slug: pages.slug,
       authorId: pages.authorId,
       content: pages.content,
+      updatedAt: pages.updatedAt,
     })
     .from(pages)
     .where(eq(pages.slug, slug))
-    .get()
-);
+    .limit(1);
+  return page;
+});
 
 type PageProps = {
   params: { pageSlug: string };

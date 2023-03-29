@@ -1,151 +1,105 @@
 import {
-  sqliteTable,
+  datetime,
   index,
-  uniqueIndex,
-  blob,
+  int,
+  mysqlTable,
   text,
-  integer,
-  foreignKey,
-} from "drizzle-orm/sqlite-core";
+  timestamp,
+  uniqueIndex,
+  varchar,
+  mysqlEnum,
+  binary,
+} from "drizzle-orm/mysql-core";
 
-export const users = sqliteTable(
-  "users",
-  {
-    id: integer("id").primaryKey(),
-    name: text("name"),
-    email: text("email").notNull(),
-    emailVerified: integer("email_verified", { mode: "timestamp" }),
-    image: text("image"),
-    role: text("role", { enum: ["admin", "user"] })
-      .default("user")
-      .notNull(),
-    createdAt: integer("created_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
-    updatedAt: integer("updated_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
-  },
-  (table) => ({
-    email: uniqueIndex("email").on(table.email),
-  })
-);
-
-export const accounts = sqliteTable(
+export const accounts = mysqlTable(
   "accounts",
   {
-    id: integer("id").primaryKey(),
-    userId: integer("user_id")
-      .notNull()
-      .references(() => users.id),
-    provider: text("provider"),
-    providerAccountId: text("provider_account_id"),
-    type: text("type"),
-    refresh_token: text("refresh_token"),
+    id: varchar("id", { length: 191 }).primaryKey().notNull(),
+    userId: varchar("userId", { length: 191 }).notNull(),
+    type: varchar("type", { length: 191 }).notNull(),
+    provider: varchar("provider", { length: 191 }).notNull(),
+    providerAccountId: varchar("providerAccountId", { length: 191 }).notNull(),
     access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    scope: text("scope"),
-    token_type: text("token_type"),
+    expires_in: int("expires_in"),
     id_token: text("id_token"),
-    session_state: text("session_state"),
-    createdAt: integer("created_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
-    updatedAt: integer("updated_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
+    refresh_token: text("refresh_token"),
+    refresh_token_expires_in: int("refresh_token_expires_in"),
+    scope: varchar("scope", { length: 191 }),
+    token_type: varchar("token_type", { length: 191 }),
+    createdAt: timestamp("createdAt").defaultNow().onUpdateNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
-  (table) => ({
-    uniqueIndex: index("unique_index").on(
-      table.provider,
-      table.providerAccountId
-    ),
-    userFk: foreignKey(() => ({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-    })),
+  (account) => ({
+    providerProviderAccountIdIndex: uniqueIndex(
+      "accounts__provider__providerAccountId__idx"
+    ).on(account.provider, account.providerAccountId),
+    userIdIndex: index("accounts__userId__idx").on(account.userId),
   })
 );
 
-export const verificationTokens = sqliteTable(
-  "verification_tokens",
-  {
-    id: integer("id").primaryKey(),
-    identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
-    expires: integer("expires", { mode: "timestamp" }).notNull(),
-  },
-  (table) => ({
-    uniqueIndex: index("unique_index").on(table.identifier, table.token),
-  })
-);
-
-export const sessions = sqliteTable(
+export const sessions = mysqlTable(
   "sessions",
   {
-    id: integer("id").primaryKey(),
-    sessionToken: text("session_token").notNull(),
-    userId: integer("user_id")
-      .notNull()
-      .references(() => users.id),
-    expires: integer("expires", { mode: "timestamp" }).notNull(),
-    createdAt: integer("created_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
-    updatedAt: integer("updated_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
+    id: varchar("id", { length: 191 }).primaryKey().notNull(),
+    sessionToken: varchar("sessionToken", { length: 191 }).notNull(),
+    userId: varchar("userId", { length: 191 }).notNull(),
+    expires: datetime("expires").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
-  (table) => ({
-    sessionToken: index("session_token").on(table.sessionToken),
-    userFk: foreignKey(() => ({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-    })),
+  (session) => ({
+    sessionTokenIndex: uniqueIndex("sessions__sessionToken__idx").on(
+      session.sessionToken
+    ),
+    userIdIndex: index("sessions__userId__idx").on(session.userId),
   })
 );
 
-export const pages = sqliteTable(
+export const users = mysqlTable(
+  "users",
+  {
+    id: varchar("id", { length: 191 }).primaryKey().notNull(),
+    name: varchar("name", { length: 191 }),
+    role: mysqlEnum("role", ["user", "admin"]).notNull().default("user"),
+    email: varchar("email", { length: 191 }).notNull(),
+    emailVerified: timestamp("emailVerified"),
+    image: varchar("image", { length: 191 }),
+    createdAt: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+  },
+  (user) => ({
+    emailIndex: uniqueIndex("users__email__idx").on(user.email),
+  })
+);
+
+export const verificationTokens = mysqlTable(
+  "verification_tokens",
+  {
+    identifier: varchar("identifier", { length: 191 }).primaryKey().notNull(),
+    token: varchar("token", { length: 191 }).notNull(),
+    expires: datetime("expires").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+  },
+  (verificationToken) => ({
+    tokenIndex: uniqueIndex("verification_tokens__token__idx").on(
+      verificationToken.token
+    ),
+  })
+);
+
+export const pages = mysqlTable(
   "pages",
   {
-    id: integer("id").primaryKey(),
-    slug: text("slug").notNull(),
-    coverPhoto: blob("cover_photo", {
-      mode: "buffer",
-    }),
+    id: varchar("id", { length: 191 }).primaryKey().notNull(),
+    authorId: varchar("author_id", { length: 191 }).notNull(),
+    slug: varchar("slug", { length: 191 }).notNull(),
     title: text("title").notNull(),
-    content: text("content").notNull(),
-    authorId: integer("author_id")
-      .notNull()
-      .references(() => users.id),
-    createdAt: integer("created_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
-    updatedAt: integer("updated_at", {
-      mode: "timestamp",
-    })
-      .defaultCurrentTimestamp()
-      .notNull(),
+    content: text("text").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
-  (table) => ({
-    slug: uniqueIndex("slug").on(table.slug),
-    userFk: foreignKey(() => ({
-      columns: [table.authorId],
-      foreignColumns: [users.id],
-    })),
+  (post) => ({
+    userIdIndex: index("posts__user_id__idx").on(post.authorId),
   })
 );

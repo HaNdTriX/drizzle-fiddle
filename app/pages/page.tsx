@@ -18,7 +18,6 @@ const getAllPages = cache(async () =>
       updatedAt: pages.updatedAt,
     })
     .from(pages)
-    .all()
 );
 
 export const metadata: Metadata = {

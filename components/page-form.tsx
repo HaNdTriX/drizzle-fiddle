@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 type PageFormProps = {
   defaultValues?: {
-    id: number;
+    id: string;
     title: string;
     slug: string;
     content: string;
@@ -25,6 +25,8 @@ export default function PageForm({
         "shadow bg-white sm:overflow-hidden sm:rounded-md",
         className
       )}
+      action="/api/pages"
+      method="POST"
       {...props}
     >
       <div className="px-4 py-5 sm:p-6">
@@ -98,7 +100,6 @@ export default function PageForm({
                       id="cover-photo"
                       name="cover-photo"
                       type="file"
-                      required
                       accept="image/png, image/jpeg, , image/gif"
                       className="sr-only"
                     />

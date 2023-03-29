@@ -19,7 +19,7 @@ async function PATCH(url: string, { arg }: { arg: FormData }) {
 
 type FormProps = {
   defaultValues: {
-    id: number;
+    id: string;
     title: string;
     slug: string;
     content: string;
