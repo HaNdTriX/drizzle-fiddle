@@ -18,3 +18,7 @@ To learn more about Next.js, take a look at the following resources:
 - [Drizzle ORM](https://github.com/drizzle-team/drizzle-orm)
 - [Tailwindcss](https://tailwindcss.com/)
 - [MySQL](https://www.mysql.com/de/)
+
+## Credits
+
+- [Marouane](https://github.com/retconned)
