@@ -1,36 +1,16 @@
-import Link from "next/link";
+import { getServerSession } from "@/lib/next-auth";
 
 export default async function MainPage() {
+  const session = await getServerSession();
+
   return (
-    <div className="py-10">
-      <header>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
-            Drizzle-Fiddle
-          </h1>
-        </div>
-      </header>
-      <main>
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            Just playing around with Drizzle & Next.js
-          </p>
-          <div className="mt-10 flex items-center gap-x-6">
-            <Link
-              href="/users"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Users <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              href="/pages"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Pages <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
-      </main>
+    <div className="mx-auto max-w-4xl  sm:px-6 lg:px-8">
+      <div className="prose prose-sm prose-primary max-w-none">
+        <h1>Drizzle-Fiddle</h1>
+        <p>Just playing around with Drizzle & Next.js</p>
+        <h2>Session Data</h2>
+        <pre>{JSON.stringify(session, null, 2)}</pre>
+      </div>
     </div>
   );
 }

@@ -7,25 +7,35 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db": "drizzle-kit"
+    "db": "drizzle-kit",
+    "generate": "drizzle-kit generate:sqlite"
   },
   "dependencies": {
-    "@types/node": "18.15.0",
-    "@types/react": "18.0.28",
-    "@types/react-dom": "18.0.11",
-    "drizzle-orm": "^0.21.1",
-    "eslint": "8.35.0",
-    "eslint-config-next": "13.2.3",
-    "mysql2": "^3.2.0",
-    "next": "13.2.3",
+    "better-sqlite3": "^8.2.0",
+    "classnames": "^2.3.2",
+    "drizzle-orm": "^0.23.2",
+    "eslint": "8.37.0",
+    "eslint-config-next": "13.2.4",
+    "next": "^13.2.5-canary.20",
+    "next-auth": "^4.20.1",
+    "next-mdx-remote": "^4.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.5"
+    "swr": "^2.1.1"
   },
   "devDependencies": {
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.16",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.9",
+    "@types/better-sqlite3": "^7.6.3",
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.31",
+    "@types/react-dom": "18.0.11",
     "autoprefixer": "^10.4.14",
-    "drizzle-kit": "^0.17.0",
+    "drizzle-kit": "^0.17.1",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.3.0",
+    "typescript": "5.0.2"
   }
 }

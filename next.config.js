@@ -2,8 +2,9 @@
 const nextConfig = {
   experimental: {
     appDir: true,
-    serverComponentsExternalPackages: ['mysql2'],
+    serverComponentsExternalPackages: ["better-sqlite3"],
+    typedRoutes: true,
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
