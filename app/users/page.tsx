@@ -2,6 +2,7 @@ import db from "@/db";
 import { users } from "@/db/schema";
 import { cache } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 const getAllUsers = cache(async () =>
   db
@@ -49,7 +50,12 @@ export default async function UsersPage() {
               )}
 
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                <Link
+                  href={`/users/${user.id}`}
+                  className="text-sm font-medium text-gray-900"
+                >
+                  {user.name}
+                </Link>
                 <p className="text-sm text-gray-500">{user.email}</p>
               </div>
             </li>
