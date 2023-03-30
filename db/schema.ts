@@ -8,7 +8,6 @@ import {
   uniqueIndex,
   varchar,
   mysqlEnum,
-  binary,
 } from "drizzle-orm/mysql-core";
 
 export const accounts = mysqlTable(
