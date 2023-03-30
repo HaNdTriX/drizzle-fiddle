@@ -1,14 +1,16 @@
 import Link from "next/link";
 import db from "@/db";
-import { pages } from "@/db/schema";
+import { pages, users } from "@/db/schema";
 import type { Metadata } from "next";
 import {
   PlusIcon,
   ChevronRightIcon,
   CalendarIcon,
+  UserCircleIcon,
 } from "@heroicons/react/20/solid";
 import { cache } from "react";
 import { sql } from "drizzle-orm";
+import { eq } from "drizzle-orm/expressions";
 
 const getAllPages = cache(async (pageNumber = 1, pageSize = 2) =>
   db
@@ -17,8 +19,10 @@ const getAllPages = cache(async (pageNumber = 1, pageSize = 2) =>
       title: pages.title,
       slug: pages.slug,
       updatedAt: pages.updatedAt,
+      authorname: users.name,
     })
     .from(pages)
+    .leftJoin(users, eq(pages.authorId, users.id))
     .limit(pageSize)
     .offset(pageSize * (pageNumber - 1))
 );
@@ -35,8 +39,14 @@ export const metadata: Metadata = {
   title: "Pages",
 };
 
-export default async function PagesPage({ searchParams: { page = "1" } }) {
-  const currentPage = Number(page);
+export default async function PagesPage({
+  searchParams,
+}: {
+  searchParams: {
+    page?: string;
+  };
+}) {
+  const currentPage = Number(searchParams.page || "1");
   const pageSize = 10;
 
   const [allPages, pagesCount] = await Promise.all([
@@ -73,7 +83,7 @@ export default async function PagesPage({ searchParams: { page = "1" } }) {
                             {page.title}
                           </p>
                         </div>
-                        <div className="mt-2 flex">
+                        <div className="mt-2 flex space-x-2">
                           <div className="flex items-center text-sm text-gray-500">
                             <CalendarIcon
                               className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
@@ -87,6 +97,13 @@ export default async function PagesPage({ searchParams: { page = "1" } }) {
                                 )}
                               </time>
                             </p>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-500">
+                            <UserCircleIcon
+                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <p>{page.authorname}</p>
                           </div>
                         </div>
                       </div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import db from "@/db";
-import { pages } from "@/db/schema";
+import { pages, users } from "@/db/schema";
 import type { Metadata } from "next";
 import { eq } from "drizzle-orm/expressions";
 import { notFound } from "next/navigation";
@@ -18,8 +18,10 @@ const getPage = cache(async (slug: string) => {
       authorId: pages.authorId,
       content: pages.content,
       updatedAt: pages.updatedAt,
+      authorname: users.name,
     })
     .from(pages)
+    .leftJoin(users, eq(pages.authorId, users.id))
     .where(eq(pages.slug, slug))
     .limit(1);
   return page;
@@ -66,6 +68,9 @@ export default async function Page({ params }: PageProps) {
           {/* @ts-expect-error Async Server Component */}
           <MDXRemote source={page.content} />
         </div>
+      </div>
+      <div className="p-2 text-xs text-right text-gray-500">
+        Created by {page.authorname}
       </div>
     </div>
   );
