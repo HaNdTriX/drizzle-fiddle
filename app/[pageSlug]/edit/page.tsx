@@ -3,7 +3,7 @@ import { pages } from "@/db/schema";
 import type { Metadata } from "next";
 import { eq } from "drizzle-orm/expressions";
 import { notFound } from "next/navigation";
-import Form from "./form";
+import PageForm from "@/components/page-form";
 import { cache } from "react";
 import { getServerSession } from "@/lib/next-auth";
 
@@ -47,7 +47,7 @@ export default async function Page({ params }: PageProps) {
         </h1>
       </div>
       <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
-        <Form defaultValues={page} />
+        <PageForm defaultValues={page} />
       </div>
     </>
   );

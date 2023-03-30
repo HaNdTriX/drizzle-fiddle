@@ -9,12 +9,16 @@ export async function POST(request: NextRequest) {
   const session = await getServerSession();
   const formData = await request.formData();
 
+  // HTML Forms do not support PUT/PATCH/DELETE
+  // Thats why we use a hidden input field to send the method
+  const method = (formData.get("_METHOD") as string) || "POST";
+
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   // TODO - validate with zod
-  const id = cuid();
+  const id = method === "PUT" ? (formData.get("id") as string) : cuid();
   const title = formData.get("title") as string;
   const slug = formData.get("slug") as string;
   const content = formData.get("content") as string;
@@ -23,15 +27,28 @@ export async function POST(request: NextRequest) {
   // const coverPhotoBlob = formData.get("cover-photo") as unknown as Blob;
   // const coverPhoto = Buffer.from(await coverPhotoBlob.arrayBuffer());
 
-  await db.insert(pages).values({
-    id,
-    title,
-    slug,
-    content,
-    authorId: session.user.id,
-  });
+  if (method === "PUT") {
+    await db
+      .update(pages)
+      .set({
+        id,
+        title,
+        slug,
+        content,
+        authorId: session.user.id,
+      })
+      .where(eq(pages.id, id));
+  } else {
+    await db.insert(pages).values({
+      id,
+      title,
+      slug,
+      content,
+      authorId: session.user.id,
+    });
+  }
 
-  const [createdPage] = await db
+  const [page] = await db
     .select({
       slug: pages.slug,
     })
@@ -39,9 +56,10 @@ export async function POST(request: NextRequest) {
     .where(eq(pages.id, id))
     .limit(1);
 
-  console.log("createdPage", createdPage);
-
+  // This endpoint can be called via ajax (fetch) or via main request (PRG)
   return request.headers.get("Accept") === "application/json"
-    ? NextResponse.json(createdPage)
-    : NextResponse.redirect(request.nextUrl.origin + `/${createdPage.slug}`);
+    ? NextResponse.json(page)
+    : NextResponse.redirect(request.nextUrl.origin + `/${page.slug}`, {
+        status: 303,
+      });
 }

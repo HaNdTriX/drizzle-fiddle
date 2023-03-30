@@ -1,4 +1,4 @@
-import PageForm from "@/app/pages/create/form";
+import PageForm from "@/components/page-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

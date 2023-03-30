@@ -1,5 +1,25 @@
+"use client";
 import { XCircleIcon, PhotoIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
+import { FormEvent, useTransition } from "react";
+import useSWRMutation from "swr/mutation";
+import { useRouter } from "next/navigation";
+
+async function fetcher(url: string, { arg }: { arg: HTMLFormElement }) {
+  const response = await fetch(url, {
+    method: "POST",
+    body: new FormData(arg),
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update page");
+  }
+
+  return response.json();
+}
 
 type PageFormProps = {
   defaultValues?: {
@@ -19,18 +39,39 @@ export default function PageForm({
   className,
   ...props
 }: PageFormProps) {
+  const action = "/api/pages";
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const { trigger, isMutating } = useSWRMutation(action, fetcher);
+  const isDisabled = isMutating || isPending || disabled;
+  const handleSubmit = async (event: FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const { slug } = await trigger(form);
+    startTransition(() => {
+      router.refresh();
+      router.push(`/${slug}`);
+    });
+  };
+
   return (
     <form
+      action={action}
+      method="POST"
+      onSubmit={handleSubmit}
       className={classNames(
         "shadow bg-white sm:overflow-hidden sm:rounded-md",
         className
       )}
-      action="/api/pages"
-      method="POST"
       {...props}
     >
       <div className="px-4 py-5 sm:p-6">
         <div className="grid grid-cols-3 gap-6">
+          {defaultValues?.id && (
+            <>
+              <input type="hidden" name="_METHOD" value="PUT" />
+              <input type="hidden" name="id" value={defaultValues.id} />
+            </>
+          )}
           {error && (
             <div className="col-span-3 shadow-sm rounded-md border border-red-200 bg-red-50 p-4">
               <div className="flex">
@@ -63,7 +104,7 @@ export default function PageForm({
             </label>
             <div className="mt-2">
               <input
-                disabled={disabled}
+                disabled={isDisabled}
                 required
                 type="text"
                 name="title"
@@ -125,7 +166,7 @@ export default function PageForm({
                 URL/
               </span>
               <input
-                disabled={disabled}
+                disabled={isDisabled}
                 required
                 type="text"
                 name="slug"
@@ -149,7 +190,7 @@ export default function PageForm({
             </label>
             <div className="mt-2">
               <textarea
-                disabled={disabled}
+                disabled={isDisabled}
                 required
                 id="content"
                 name="content"
@@ -174,7 +215,7 @@ export default function PageForm({
         </button>
         <button
           type="submit"
-          disabled={disabled}
+          disabled={isDisabled}
           className="ml-3 inline-flex justify-center rounded-md bg-primary-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
         >
           Save
