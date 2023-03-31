@@ -4,6 +4,9 @@ import ClientProvider from "@/components/client-provider";
 import { CircleStackIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import AuthButtons from "@/components/auth-button";
+import LocaleSwitcher from "@/components/locale-switcher";
+import { type Locale } from "@/i18n-config";
+import getDictionary from "@/lib/i18n/get-dictionary";
 
 export const metadata: Metadata = {
   title: {
@@ -39,13 +42,20 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
+type RootLayoutProps = {
   children: React.ReactNode;
-}) {
+  params: {
+    lang: Locale;
+  };
+};
+
+export default async function RootLayout({
+  children,
+  params: { lang },
+}: RootLayoutProps) {
+  const dictionary = await getDictionary(lang);
   return (
-    <html className="h-full" lang="en">
+    <html className="h-full" lang={lang}>
       <ClientProvider>
         <body className="h-full bg-gray-100 flex flex-col">
           <nav className="bg-gray-800 text-white">
@@ -54,7 +64,7 @@ export default function RootLayout({
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <Link
-                      href="/"
+                      href={`/${lang}`}
                       className="text-white h-16 w-14 flex items-center transition-colors justify-center group hover:text-gray-50 hover:bg-primary-700 bg-primary-600"
                     >
                       <CircleStackIcon className="h-8 w-8" aria-hidden="true" />
@@ -64,25 +74,26 @@ export default function RootLayout({
                   <div className="ml-6 flex items-baseline space-x-4">
                     <Link
                       className="text-gray-300 transition-colors hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                      href="/"
+                      href={`/${lang}`}
                     >
-                      Home
+                      {dictionary["Home"]}
                     </Link>
                     <Link
                       className="text-gray-300 transition-colors hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                      href="/pages"
+                      href={`/${lang}/pages`}
                     >
-                      Pages
+                      {dictionary["Pages"]}
                     </Link>
                     <Link
                       className="text-gray-300 transition-colors hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                      href="/users"
+                      href={`/${lang}/users`}
                     >
-                      Users
+                      {dictionary["Users"]}
                     </Link>
                   </div>
                 </div>
-                <div>
+                <div className="flex">
+                  <LocaleSwitcher />
                   <AuthButtons />
                 </div>
               </div>

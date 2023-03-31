@@ -51,6 +51,13 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.37.0.tgz#cf1b5fa24217fe007f6487a26d765274925efa7d"
   integrity sha512-x5vzdtOOGgFVDCUs81QRB2+liax8rFg3+7hqM+QhBG0/G3F1ZsoYl97UrqgHgQ9KKT7G6c4V+aTUCgu/n22v1A==
 
+"@formatjs/intl-localematcher@^0.2.32":
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-localematcher/-/intl-localematcher-0.2.32.tgz#00d4d307cd7d514b298e15a11a369b86c8933ec1"
+  integrity sha512-k/MEBstff4sttohyEpXxCmC3MqbUn9VvHGlZ8fauLzkbwXmVrEeyzS+4uhrvAk9DWU9/7otYWxyDox4nT/KVLQ==
+  dependencies:
+    tslib "^2.4.0"
+
 "@headlessui/react@^1.7.13":
   version "1.7.13"
   resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.7.13.tgz#fd150b394954e9f1d86ed2340cffd1217d6e7628"
@@ -296,6 +303,11 @@
   version "0.7.31"
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.31.tgz#31b7ca6407128a3d2bbc27fe2d21b345397f6197"
   integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
+
+"@types/negotiator@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@types/negotiator/-/negotiator-0.6.1.tgz#4c75543f6ef87f427f4705e731a933595b7397f5"
+  integrity sha512-c4mvXFByghezQ/eVGN5HvH/jI63vm3B7FiE81BUzDAWmuiohRecCO6ddU60dfq29oKUMiQujsoB2h0JQC7JHKA==
 
 "@types/node@18.15.11":
   version "18.15.11"
@@ -2778,6 +2790,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
+negotiator@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
+  integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
+
 next-auth@^4.20.1:
   version "4.20.1"
   resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.20.1.tgz#6e65c4fde14171f6ce64f05f672f80f39fc418c7"
@@ -3342,6 +3359,11 @@ seq-queue@^0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/seq-queue/-/seq-queue-0.0.5.tgz#d56812e1c017a6e4e7c3e3a37a1da6d78dd3c93e"
   integrity sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==
+
+server-only@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/server-only/-/server-only-0.0.1.tgz#0f366bb6afb618c37c9255a314535dc412cd1c9e"
+  integrity sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==
 
 shebang-command@^2.0.0:
   version "2.0.0"
