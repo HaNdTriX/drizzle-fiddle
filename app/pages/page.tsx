@@ -71,6 +71,7 @@ export default async function PagesPage({
 
       <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
         <div className="overflow-hidden bg-white shadow sm:rounded-md">
+          {/* List */}
           <ul role="list" className="divide-y divide-gray-200">
             {allPages.map((page) => (
               <li key={page.id}>
@@ -119,16 +120,27 @@ export default async function PagesPage({
               </li>
             ))}
           </ul>
+          {/* Pagination */}
           <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-gray-500">
-                  Showing <span className="font-medium">1</span> to{" "}
-                  <span className="font-medium">{pageSize}</span> of{" "}
-                  <span className="font-medium">{pagesCount}</span> results
+                  Showing{" "}
+                  <span className="font-medium">
+                    {(currentPage - 1) * pageSize + 1}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-medium">
+                    {Math.min(currentPage * pageSize, pagesCount)}
+                  </span>{" "}
+                  of <span className="font-medium">{pagesCount}</span> results
                 </p>
               </div>
-              <div className="flex flex-1 justify-end">
+              <nav
+                role="navigation"
+                aria-label="pagination"
+                className="flex flex-1 justify-end"
+              >
                 {currentPage > 1 && (
                   <Link
                     href={`/pages?page=${currentPage - 1}`}
@@ -145,7 +157,7 @@ export default async function PagesPage({
                     Next
                   </Link>
                 )}
-              </div>
+              </nav>
             </div>
           </div>
         </div>
